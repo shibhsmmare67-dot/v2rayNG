@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Checkbox
@@ -61,6 +62,9 @@ import com.v2ray.ang.R
 import com.v2ray.ang.util.AppIconFetcher
 import sh.calvin.reorderable.ReorderableCollectionItemScope
 
+// Bettbox-style large rounded card used for server rows and other cards.
+val BettboxCardShape = RoundedCornerShape(24.dp)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
@@ -102,7 +106,8 @@ fun AppTopBar(
             },
             actions = actions,
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface,
+                // Blend into the pale page background instead of a white bar.
+                containerColor = MaterialTheme.colorScheme.background,
                 titleContentColor = MaterialTheme.colorScheme.onSurface,
                 navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
                 actionIconContentColor = MaterialTheme.colorScheme.onSurface
@@ -287,6 +292,8 @@ fun ReorderableListItem(
     val elevation by reorderableElevation(isDragging)
     Surface(
         modifier = Modifier.fillMaxWidth(),
+        color = Color.Transparent,
+        shape = BettboxCardShape,
         shadowElevation = elevation
     ) {
         Row(
@@ -310,6 +317,8 @@ fun ReorderableGridItem(
         modifier = Modifier
             .fillMaxWidth()
             .then(with(scope) { reorderableDragHandle() }),
+        color = Color.Transparent,
+        shape = BettboxCardShape,
         shadowElevation = elevation
     ) {
         content()

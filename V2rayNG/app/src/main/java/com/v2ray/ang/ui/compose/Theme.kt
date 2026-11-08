@@ -28,51 +28,51 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 private val LightColor = lightColorScheme(
-    primary = Color(0xFF000000), // Black
+    primary = Color(0xFF0E5B4A), // Deep Green (Bettbox-style accent)
     onPrimary = Color(0xFFFFFFFF), // White
-    primaryContainer = Color(0xFFE0E0E0), // Light Gray
-    onPrimaryContainer = Color(0xFF000000), // Black
-    secondary = Color(0xFFf97910), // Orange
+    primaryContainer = Color(0xFFCDE8DD), // Pale Green
+    onPrimaryContainer = Color(0xFF0E3B32), // Dark Green
+    secondary = Color(0xFF0E5B4A), // Deep Green
     onSecondary = Color(0xFFFFFFFF), // White
-    secondaryContainer = Color(0xFFFFE8D6), // Pale Orange
-    onSecondaryContainer = Color(0xFF2B1700), // Dark Brown
-    tertiary = Color(0xFF009966), // Green
+    secondaryContainer = Color(0xFFDCEFE7), // Pale Green
+    onSecondaryContainer = Color(0xFF0E3B32), // Dark Green
+    tertiary = Color(0xFF0E7A5F), // Green
     onTertiary = Color(0xFFFFFFFF), // White
-    tertiaryContainer = Color(0xFFA0F2D0), // Light Green
-    onTertiaryContainer = Color(0xFF00201A), // Dark Teal
+    tertiaryContainer = Color(0xFFCDE8DD), // Pale Green
+    onTertiaryContainer = Color(0xFF0E3B32), // Dark Green
     error = Color(0xFFBA1A1A), // Red
     errorContainer = Color(0xFFFFDAD6), // Light Red
     onError = Color(0xFFFFFFFF), // White
     onErrorContainer = Color(0xFF410002), // Dark Red
-    background = Color(0xFFFFFFFF), // White
-    onBackground = Color(0xFF1C1B1F), // Near Black
+    background = Color(0xFFE8EDE9), // Pale Gray-Green (Bettbox-style page background)
+    onBackground = Color(0xFF1C2B26), // Near Black Green
     surface = Color(0xFFFFFFFF), // White
-    onSurface = Color(0xFF1C1B1F), // Near Black
-    surfaceVariant = Color(0xFFE7E0EC), // Light Purple Gray
-    onSurfaceVariant = Color(0xFF49454F), // Dark Gray
-    outline = Color(0xFF79747E), // Medium Gray
-    outlineVariant = Color(0xFFCAC4D0), // Light Gray
-    inverseSurface = Color(0xFF313033), // Dark Gray
-    inverseOnSurface = Color(0xFFF4EFF4), // Very Light Gray
-    inversePrimary = Color(0xFFC0C0C0), // Silver Gray
+    onSurface = Color(0xFF1C2B26), // Near Black Green
+    surfaceVariant = Color(0xFFE2EAE5), // Pale Gray-Green
+    onSurfaceVariant = Color(0xFF4A5A54), // Dark Gray Green
+    outline = Color(0xFFB9C8BE), // Gray Green
+    outlineVariant = Color(0xFFD6E0D9), // Light Gray Green
+    inverseSurface = Color(0xFF1E3A32), // Dark Green
+    inverseOnSurface = Color(0xFFEAF2ED), // Very Light Gray-Green
+    inversePrimary = Color(0xFFA8D5C2), // Light Green
     scrim = Color(0xFF000000), // Black
-    surfaceTint = Color(0xFF000000), // Black
+    surfaceTint = Color(0xFF0E5B4A), // Deep Green
     surfaceContainerLowest = Color(0xFFFFFFFF), // White
-    surfaceContainerLow = Color(0xFFF7F7F7), // Very Light Gray
-    surfaceContainer = Color(0xFFF1F1F1), // Light Gray
-    surfaceContainerHigh = Color(0xFFEBEBEB), // Light Gray
-    surfaceContainerHighest = Color(0xFFE5E5E5), // Light Gray
+    surfaceContainerLow = Color(0xFFF4F7F5), // Very Light Gray-Green
+    surfaceContainer = Color(0xFFEDF2EF), // Light Gray-Green
+    surfaceContainerHigh = Color(0xFFE6EDE9), // Light Gray-Green
+    surfaceContainerHighest = Color(0xFFDFE8E2), // Light Gray-Green
 )
 
 private val DarkColor = darkColorScheme(
-    primary = Color(0xFFC0C0C0), // Silver Gray
-    onPrimary = Color(0xFF303030), // Dark Gray
-    primaryContainer = Color(0xFF474747), // Gray
-    onPrimaryContainer = Color(0xFFE0E0E0), // Light Gray
-    secondary = Color(0xFFf97910), // Orange
-    onSecondary = Color(0xFF4E2600), // Dark Brown
-    secondaryContainer = Color(0xFF6F3800), // Brown
-    onSecondaryContainer = Color(0xFFFFE8D6), // Pale Orange
+    primary = Color(0xFFA8D5C2), // Light Green
+    onPrimary = Color(0xFF0E3B32), // Dark Green
+    primaryContainer = Color(0xFF0E5B4A), // Deep Green
+    onPrimaryContainer = Color(0xFFCDE8DD), // Pale Green
+    secondary = Color(0xFF7ED0B0), // Light Green
+    onSecondary = Color(0xFF0E3B32), // Dark Green
+    secondaryContainer = Color(0xFF0E5B4A), // Deep Green
+    onSecondaryContainer = Color(0xFFCDE8DD), // Pale Green
     tertiary = Color(0xFF83D6B5), // Mint Green
     onTertiary = Color(0xFF00382E), // Dark Teal
     tertiaryContainer = Color(0xFF005143), // Teal
@@ -91,9 +91,9 @@ private val DarkColor = darkColorScheme(
     outlineVariant = Color(0xFF49454F), // Dark Gray
     inverseSurface = Color(0xFFE6E1E5), // Light Gray
     inverseOnSurface = Color(0xFF1C1B1F), // Near Black
-    inversePrimary = Color(0xFF000000), // Black
+    inversePrimary = Color(0xFF0E5B4A), // Deep Green
     scrim = Color(0xFF000000), // Black
-    surfaceTint = Color(0xFFC0C0C0), // Silver Gray
+    surfaceTint = Color(0xFFA8D5C2), // Light Green
     surfaceContainerLowest = Color(0xFF0F0F12), // Near Black
     surfaceContainerLow = Color(0xFF1A191D), // Dark Gray
     surfaceContainer = Color(0xFF1E1D21), // Dark Gray
@@ -102,13 +102,13 @@ private val DarkColor = darkColorScheme(
 )
 
 // Semantic Colors
-val colorPing = Color(0xFF009966) // Green
+val colorPing = Color(0xFF0E7A5F) // Deep Green
 val colorPingRed = Color(0xFFFF0099) // Pink Red
-val colorConfigType = Color(0xFFf97910) // Orange
-val colorFabActive = Color(0xFFf97910) // Orange
+val colorConfigType = Color(0xFF0E5B4A) // Deep Green
+val colorFabActive = Color(0xFF0E5B4A) // Deep Green
 val colorFabInactiveLight = Color(0xFF9C9C9C) // Gray
 val colorFabInactiveDark = Color(0xFF646464) // Dark Gray
-val dividerColorLight = Color(0xFFE0E0E0) // Light Gray
+val dividerColorLight = Color(0xFFD6E0D9) // Light Gray-Green
 val dividerColorDark = Color(0xFF424242) // Dark Gray
 
 // Toast Colors 85%
@@ -127,7 +127,10 @@ object ThemeManager {
     val themeMode: StateFlow<String> = _themeMode.asStateFlow()
 
     private val _dynamicColorEnabled = MutableStateFlow(
-        MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR, true)
+        // Bettbox-style palette is the default: dynamic color would replace it
+        // with the wallpaper palette on Android S+, so fresh installs default
+        // to off. Users can still re-enable it in Settings.
+        MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR, false)
     )
     val dynamicColorEnabled: StateFlow<Boolean> = _dynamicColorEnabled.asStateFlow()
 
@@ -145,7 +148,7 @@ object ThemeManager {
         _themeMode.value =
             MmkvManager.decodeSettingsString(AppConfig.PREF_UI_MODE_NIGHT, "0") ?: "0"
         _dynamicColorEnabled.value =
-            MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR, true)
+            MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR, false)
     }
 }
 
@@ -169,6 +172,8 @@ fun AppTheme(
     val dynamicColor by ThemeManager.dynamicColorEnabled.collectAsState()
     val context = LocalContext.current
     val colorScheme = when {
+        // Dynamic color takes precedence when the user enables it in
+        // Settings; turn it off there to see the Bettbox-style palette.
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
