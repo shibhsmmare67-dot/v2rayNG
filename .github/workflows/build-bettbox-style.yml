@@ -1,0 +1,126 @@
+# Build v2rayNG (Bettbox style) APK
+#
+# 這是針對 HEAD 2.3.15 + Bettbox 風格改動的版本。
+# 改動內容：淺灰綠底 #E8EDE9、白色大圓角卡片、深綠主色 #0E5B4A，
+# 只改了 6 個 UI 檔案（Theme.kt、Components.kt、MainServerPager.kt、
+# MainScreen.kt、MainBottomBar.kt、SettingsActivity.kt），沒動資料與狀態邏輯。
+#
+# 用法（推到自己的 GitHub fork 後）：
+#   1. 在 GitHub 上 fork 2dust/v2rayNG，把這份改好的程式碼
+#      （含本檔案 .github/workflows/build-bettbox-style.yml）push 上去。
+#   2. 打開自己 fork 的 Actions 頁，找到 "Build v2rayNG (Bettbox style)"，
+#      點 "Run workflow" 手動觸發；或直接 push 到 main / master 也會自動觸發。
+#   3. 等它跑完（約十幾分鐘），在該次執行頁面的 Artifacts 區
+#      下載 v2rayng-bettbox-style-apk，傳到手機安裝。
+#
+# 注意：
+#   - 這是未簽名的 debug APK（assembleFdroidDebug），不需要 keystore，
+#     安裝時手機要允許安裝未知來源應用；不要把它當正式發布版散發。
+#   - 安裝後在 App 設定裡把「動態取色」關掉，否則系統壁紙配色
+#     會蓋掉新的深綠 / 淺灰綠配色。
+#   - 本工作流的 SDK / NDK / Java / HEV / AAR 步驟全部照抄官方
+#     .github/workflows/build.yml，只是把簽名發布版改成免簽名 debug 版。
+#   - 這裡（Muse 這台電腦）沒有 Java / Android SDK，沒辦法在本地
+#     實際跑這條 Actions 驗證，第一次跑請看 Actions 的日誌。
+
+name: Build v2rayNG (Bettbox style)
+
+on:
+  # 手動觸發：在 Actions 頁點 "Run workflow" 即可
+  workflow_dispatch:
+  # 推程式碼時自動觸發（main 或 master 任一分支都行）
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          submodules: 'recursive'
+          fetch-depth: '0'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          log-accepted-android-sdk-licenses: false
+          cmdline-tools-version: '14742923'
+          packages: 'platforms;android-37.0 build-tools;37.0.0 platform-tools'
+
+      - name: Install NDK
+        run: |
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+            --channel=0 \
+            --install "ndk;30.0.16248370"
+          echo "NDK_HOME=$ANDROID_HOME/ndk/30.0.16248370" >> $GITHUB_ENV
+          sed -i '10i\
+          \
+              ndkVersion = "30.0.16248370"' ${{ github.workspace }}/V2rayNG/app/build.gradle.kts
+
+      - name: Restore cached libhevtun
+        id: cache-libhevtun-restore
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ github.workspace }}/libs
+          key: libhevtun-${{ runner.os }}-${{ env.NDK_HOME }}-${{ hashFiles('.git/modules/hev-socks5-tunnel/HEAD') }}-${{ hashFiles('compile-hevtun.sh') }}
+
+      - name: Build libhevtun
+        if: steps.cache-libhevtun-restore.outputs.cache-hit != 'true'
+        run: |
+          bash compile-hevtun.sh
+
+      - name: Save libhevtun
+        if: steps.cache-libhevtun-restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ github.workspace }}/libs
+          key: libhevtun-${{ runner.os }}-${{ env.NDK_HOME }}-${{ hashFiles('.git/modules/hev-socks5-tunnel/HEAD') }}-${{ hashFiles('compile-hevtun.sh') }}
+
+      - name: Copy libhevtun
+        run: |
+          cp -r ${{ github.workspace }}/libs ${{ github.workspace }}/V2rayNG/app
+
+      - name: Fetch AndroidLibXrayLite tag
+        run: |
+          pushd AndroidLibXrayLite
+          CURRENT_TAG=$(git describe --tags --abbrev=0)
+          echo "Current tag in this repo: $CURRENT_TAG"
+          echo "CURRENT_TAG=$CURRENT_TAG" >> $GITHUB_ENV
+          popd
+
+      - name: Download libv2ray
+        uses: robinraju/release-downloader@v1.13
+        with:
+          repository: '2dust/AndroidLibXrayLite'
+          tag: ${{ env.CURRENT_TAG }}
+          fileName: 'libv2ray.aar'
+          out-file-path: V2rayNG/app/libs/
+
+      - name: Setup Java
+        uses: actions/setup-java@v6.1.0
+        with:
+          distribution: 'temurin'
+          # 注意：官方 build.yml 用 Java 21，不是 17，這裡照官方走。
+          java-version: '21'
+
+      - name: Build F-Droid debug APK
+        run: |
+          cd ${{ github.workspace }}/V2rayNG
+          echo "sdk.dir=${ANDROID_HOME}" > local.properties
+          chmod 755 gradlew
+          ./gradlew :app:assembleFdroidDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v7
+        if: ${{ success() }}
+        with:
+          name: v2rayng-bettbox-style-apk
+          path: ${{ github.workspace }}/V2rayNG/app/build/outputs/apk/fdroid/debug/
